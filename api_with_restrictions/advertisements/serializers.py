@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django_filters import FilterSet, DateFromToRangeFilter
 from rest_framework import serializers
 
 from advertisements.models import Advertisement
@@ -20,6 +21,9 @@ class AdvertisementSerializer(serializers.ModelSerializer):
         read_only=True,
     )
 
+    class F(FilterSet):
+        published = DateFromToRangeFilter()
+
     class Meta:
         model = Advertisement
         fields = ('id', 'title', 'description', 'creator',
@@ -39,10 +43,8 @@ class AdvertisementSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         """Метод для валидации. Вызывается при создании и обновлении."""
-        q = 0
-        if 'OPEN' in data['status']:
-            q += 1
-            if q >= 10:
+        queryset = Advertisement.objects.filter(creator=self.context["request"].user, status='OPEN')
+        if len(queryset) >= 10 and data['status'] == 'OPEN':
                 raise ValueError('Нарушено допустимое количество открытых объявлений')
 
         # TODO: добавьте требуемую валидацию

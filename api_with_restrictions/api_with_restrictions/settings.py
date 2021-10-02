@@ -92,6 +92,9 @@ REST_FRAMEWORK = {
 
 WSGI_APPLICATION = 'api_with_restrictions.wsgi.application'
 
+SIMPLE_JWT = {
+'AUTH_HEADER_TYPES': ('JWT',),
+}
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
@@ -144,3 +147,4 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
